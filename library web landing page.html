@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lumineux Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #7b68ee;
+      --accent2: #00d4ff;
+      --bg-light: rgba(255, 255, 255, 0.45);
+      --bg-dark: rgba(15, 15, 25, 0.85);
+      --text-dark: #0f172a;
+      --text-light: #f8fafc;
+      --transition: 0.3s ease;
+      --nav-height: 70px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-light);
+      background: linear-gradient(270deg, #0f172a, #1e293b, #28374f, #0f172a);
+      background-attachment: fixed;
+      background-size: 800% 800%;
+      transition: background var(--transition), color var(--transition);
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body.light-mode {
+      background: linear-gradient(270deg, #e2e8f0, #f8fafc, #cbd5e1, #e2e8f0);
+      background-attachment: fixed;
+      background-size: 800% 800%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--text-dark);
+    }
+
+    .nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: var(--bg-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition);
+    }
+
+    body.light-mode .nav-wrap { background: var(--bg-light); }
+
+    .nav.scrolled {
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    body.light-mode .nav.scrolled {
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav {
+      width: 100%; max-width: 1100px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700; font-size: 1.8rem;
+      color: var(--accent2);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: color var(--transition);
+    }
+
+    .menu { display: flex; gap: 20px; }
+
+    .menu a {
+      color: inherit; text-decoration: none;
+      font-weight: 500; font-size: 1rem;
+      letter-spacing: 0.3px; padding: 8px 14px;
+      border-radius: 8px; position: relative;
+      transition: all var(--transition);
+      overflow: hidden;
+    }
+
+    .menu a::after {
+      content: ''; position: absolute; left: 50%; bottom: 0;
+      width: 0%; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px; transition: all 0.4s ease;
+      transform: translateX(-50%);
+    }
+
+    .menu a:hover::after, .menu a.active::after { width: 80%; }
+
+    .menu a:hover { color: var(--accent2); transform: translateY(-2px); }
+
+    .theme-toggle {
+      border: none; background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background-size: 200% 200%; color: white;
+      padding: 10px 16px; border-radius: 10px;
+      cursor: pointer; font-weight: 600; font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      animation: buttonPulse 6s ease infinite;
+      transition: transform var(--transition), filter var(--transition);
+    }
+
+    @keyframes buttonPulse {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .theme-toggle:hover { filter: brightness(1.15); transform: translateY(-3px); }
+
+    section {
+      height: 100vh; padding: 120px 20px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      background-attachment: fixed; background-size: cover; background-repeat: no-repeat; background-position: center;
+    }
+
+    #home { background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1950&q=80'); }
+    #catalog { background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80'); }
+    #events { background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1950&q=80'); }
+    #about { background-image: url('https://images.unsplash.com/photo-1522202222206-b0c54b6e0a71?auto=format&fit=crop&w=1950&q=80'); }
+    #contact { background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1950&q=80'); }
+
+    section.visible { opacity: 1; transform: translateY(0); }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; margin-bottom: 16px;
+      letter-spacing: 0.6px; color: #fff;
+    }
+
+    p {
+      max-width: 700px; font-size: 1.1rem;
+      font-weight: 300; line-height: 1.6;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    body.light-mode p { color: rgba(15,15,25,0.8); }
+
+    .search-box {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(255,255,255,0.15);
+      border-radius: 30px;
+      padding: 8px 20px;
+      backdrop-filter: blur(10px);
+      transition: all var(--transition);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 1.1rem;
+      width: 250px;
+      padding: 10px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .search-box input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .search-results {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-results p { color: #fff; font-weight: 400; font-size: 1rem; }
+
+    footer { text-align: center; padding: 40px 0; font-size: 0.9rem; background: rgba(0,0,0,0.3); color: #ccc; }
+
+  </style>
+</head>
+<body>
+  <div class="nav-wrap" id="navWrap">
+    <nav class="nav" id="nav">
+      <a href="#home" class="logo">Lumineux Library</a>
+      <div class="menu">
+        <a href="#home" class="active">Home</a>
+        <a href="#catalog">Catalog</a>
+        <a href="#events">Events</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button class="theme-toggle" id="themeToggle">Toggle Theme</button>
+    </nav>
+  </div>
+
+  <section id="home">
+    <h1>Welcome to Lumineux Library</h1>
+    <p>Discover a world of literature, research, and imagination. Explore thousands of books and digital resources in one elegant space.</p>
+  </section>
+
+  <section id="catalog">
+    <h2>Explore Our Catalog</h2>
+    <p>Search across genres, authors, and topics. From timeless classics to modern releases, our curated catalog is a haven for every reader.</p>
+    <div class="search-box">
+      <input type="text" id="bookSearch" placeholder="Search for books..." />
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </section>
+
+  <section id="events">
+    <h2>Library Events</h2>
+    <p>Join engaging workshops, book readings, and community discussions hosted by renowned authors and scholars.</p>
+  </section>
+
+  <section id="about">
+    <h2>About Us</h2>
+    <p>Lumineux Library blends tradition and technology, offering a tranquil environment to learn, grow, and connect through knowledge.</p>
+  </section>
+
+  <section id="contact">
+    <h2>Contact & Membership</h2>
+    <p>Become a member today or reach out for inquiries. Your journey into the world of knowledge begins here.</p>
+  </section>
+
+  <footer>
+    © 2025 Lumineux Library. All Rights Reserved.
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    const navWrap = document.getElementById('navWrap');
+    const links = document.querySelectorAll('.menu a');
+    const themeToggle = document.getElementById('themeToggle');
+    const sections = document.querySelectorAll('section');
+    const searchInput = document.getElementById('bookSearch');
+    const searchResults = document.getElementById('searchResults');
+
+    const books = ["The Great Gatsby", "1984", "Pride and Prejudice", "The Catcher in the Rye", "To Kill a Mockingbird", "Moby-Dick", "War and Peace", "Brave New World", "Jane Eyre", "The Odyssey"];
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      searchResults.innerHTML = '';
+      if (query) {
+        const matches = books.filter(book => book.toLowerCase().includes(query));
+        if (matches.length > 0) {
+          matches.forEach(book => {
+            const p = document.createElement('p');
+            p.textContent = book;
+            searchResults.appendChild(p);
+          });
+        } else {
+          searchResults.innerHTML = '<p>No matches found.</p>';
+        }
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY > 60;
+      nav.classList.toggle('scrolled', scrolled);
+      navWrap.classList.toggle('scrolled', scrolled);
+
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        if (scrollY >= sectionTop) current = section.getAttribute('id');
+      });
+
+      links.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) link.classList.add('active');
+      });
+
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          section.classList.add('visible');
+        }
+      });
+    });
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+    });
+  </script>
+</body>
+</html>
